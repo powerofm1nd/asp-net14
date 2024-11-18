@@ -3,7 +3,7 @@ using OpenTelemetry;
 
 namespace asp_net_13;
 
-public class ActivityFilteringProcessor : BaseProcessor<Activity>
+public class ActivityFilteringProcessor(Func<object, bool> func) : BaseProcessor<Activity>
 {
     public override void OnStart(Activity activity)
     {

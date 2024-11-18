@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using asp_net_13;
 using Microsoft.AspNetCore.Diagnostics;
 using OpenTelemetry.Metrics;
@@ -11,82 +12,59 @@ var otelCollectorEndpoint = new Uri("http://127.0.0.1:4317");
 
 //Налаштування для логування з OpenTelemetry
 builder.Services.AddOpenTelemetry()
-    .WithTracing(tracingBuilder =>
-    {
-        tracingBuilder
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
+.WithTracing(tracingBuilder =>
+{
+    tracingBuilder
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+        
+        .AddService("OpenTelemetryDemoService"))
+        .AddAspNetCoreInstrumentation(options =>
+        {
+            options.RecordException = true;
             
-            .AddService("OpenTelemetryDemoService"))
-            .AddAspNetCoreInstrumentation(options =>
+            //Додавання фільтру
+            options.Filter = (httpContext) =>
             {
-                options.RecordException = true;
-                
-                //Додавання фільтру
-                options.Filter = (httpContext) =>
-                {
-                    var hasError = httpContext.Response.StatusCode >= 400;
-                    var exceptionFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
-                    var hasException = exceptionFeature?.Error != null;
-                    return hasError || hasException;
-                };
-            })
-            .AddProcessor(new ActivityFilteringProcessor())
-            .AddHttpClientInstrumentation()
-            .AddConsoleExporter()
-            .AddSource("OpenTelemetryDemo")
-            .AddOtlpExporter(options =>
-            {
-                options.Endpoint = otelCollectorEndpoint; // Підключення до OpenTelemetry Collector
-            });
-    })
-    .WithMetrics(metricsBuilder =>
-    {
-        metricsBuilder
-            .SetResourceBuilder(ResourceBuilder.CreateDefault()
-            .AddService("OpenTelemetryDemoService"))
-            .AddAspNetCoreInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddRuntimeInstrumentation()
-            .AddProcessInstrumentation()
-            .AddConsoleExporter()
-            .AddOtlpExporter(options =>
-            {
-                options.Endpoint = otelCollectorEndpoint;
-            });
-    });
+                var hasError = httpContext.Response.StatusCode >= 400;
+                var exceptionFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
+                var hasException = exceptionFeature?.Error != null;
+                return hasError || hasException;
+            };
+        })
+        .AddProcessor(new ActivityFilteringProcessor((activity) =>
+        {
+            // Відбираємо лише ті сліди, де тривалість більше 1 секунди
+            var duration = (activity as Activity).Duration;
+            return duration > TimeSpan.FromSeconds(1);
+        }))
+        .AddHttpClientInstrumentation()
+        .AddConsoleExporter()
+        .AddSource("OpenTelemetryDemo")
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = otelCollectorEndpoint; // Підключення до OpenTelemetry Collector
+        });
+})
+.WithMetrics(metricsBuilder =>
+{
+    metricsBuilder
+        .SetResourceBuilder(ResourceBuilder.CreateDefault()
+        .AddService("OpenTelemetryDemoService"))
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddProcessInstrumentation()
+        .AddConsoleExporter()
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = otelCollectorEndpoint;
+        });
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
-
-app.Use(async (context, next) =>
-{
-    try
-    {
-        await next(); // Выполняем следующий middleware
-    }
-    catch (Exception ex)
-    {
-        // Логируем исключение
-        var exceptionHandlerFeature = new ExceptionHandlerFeature
-        {
-            Error = ex
-        };
-        context.Features.Set<IExceptionHandlerFeature>(exceptionHandlerFeature);
-
-        // Устанавливаем статус код 500 для исключений
-        context.Response.StatusCode = 500;
-
-        throw; // Повторно выбрасываем исключение
-    }
-
-    // Устанавливаем статус 404 для необработанных маршрутов
-    if (context.Response.StatusCode == 200 && !context.Response.HasStarted)
-    {
-        context.Response.StatusCode = 404;
-    }
-});
 
 
 // Configure the HTTP request pipeline.
