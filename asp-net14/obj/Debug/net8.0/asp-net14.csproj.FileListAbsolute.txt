@@ -57,3 +57,6 @@ E:\asp.net projects\asp-net-13\asp-net14\obj\Debug\net8.0\refint\asp-net14.dll
 E:\asp.net projects\asp-net-13\asp-net14\obj\Debug\net8.0\asp-net14.pdb
 E:\asp.net projects\asp-net-13\asp-net14\obj\Debug\net8.0\asp-net14.genruntimeconfig.cache
 E:\asp.net projects\asp-net-13\asp-net14\obj\Debug\net8.0\ref\asp-net14.dll
+E:\asp.net projects\asp-net-13\asp-net14\bin\Debug\net8.0\OpenTelemetry.Instrumentation.Process.dll
+E:\asp.net projects\asp-net-13\asp-net14\bin\Debug\net8.0\OpenTelemetry.Instrumentation.Runtime.dll
+E:\asp.net projects\asp-net-13\asp-net14\obj\Debug\net8.0\asp-net14.sourcelink.json

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "V+oTFTDwZSU=",
+  "dgSpecHash": "UcFjZn3mx7c=",
   "success": true,
   "projectFilePath": "E:\\asp.net projects\\asp-net-13\\asp-net14\\asp-net14.csproj",
   "expectedPackageFiles": [
@@ -30,6 +30,8 @@
     "C:\\Users\\EugenDesktop\\.nuget\\packages\\opentelemetry.extensions.hosting\\1.10.0\\opentelemetry.extensions.hosting.1.10.0.nupkg.sha512",
     "C:\\Users\\EugenDesktop\\.nuget\\packages\\opentelemetry.instrumentation.aspnetcore\\1.9.0\\opentelemetry.instrumentation.aspnetcore.1.9.0.nupkg.sha512",
     "C:\\Users\\EugenDesktop\\.nuget\\packages\\opentelemetry.instrumentation.http\\1.9.0\\opentelemetry.instrumentation.http.1.9.0.nupkg.sha512",
+    "C:\\Users\\EugenDesktop\\.nuget\\packages\\opentelemetry.instrumentation.process\\0.5.0-beta.7\\opentelemetry.instrumentation.process.0.5.0-beta.7.nupkg.sha512",
+    "C:\\Users\\EugenDesktop\\.nuget\\packages\\opentelemetry.instrumentation.runtime\\1.9.0\\opentelemetry.instrumentation.runtime.1.9.0.nupkg.sha512",
     "C:\\Users\\EugenDesktop\\.nuget\\packages\\system.diagnostics.diagnosticsource\\9.0.0\\system.diagnostics.diagnosticsource.9.0.0.nupkg.sha512",
     "C:\\Users\\EugenDesktop\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
     "C:\\Users\\EugenDesktop\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512"

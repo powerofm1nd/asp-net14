@@ -17,13 +17,28 @@ public class HomeController : Controller
         _tracer = tracerProvider.GetTracer("MyAspNetCoreTracer");
     }
 
-    public IActionResult Index()
+    public IActionResult Index() {
+        _logger.Log(LogLevel.Information, "!!! Something !!!");
+        
+        using (var activity = new ActivitySource("OpenTelemetryDemo")
+        .StartActivity("SampleController.Get")) 
+        {
+            // Додавання атрибутів
+            activity?.SetTag("http.method", "GET");
+            activity?.SetTag("priority", "high");
+            
+            activity?.AddBaggage("priority", "high");
+            
+            // Додаємо атрибути з контексту запиту
+            var requestId = HttpContext?.TraceIdentifier;
+            activity?.SetTag("request_id", requestId);
+            return View();
+        }
+    }
+    
+    public IActionResult NoPage()
     {
-        _logger.Log(LogLevel.Information, "Something !!!");
-        
-        
-        
-        return View();
+        return NotFound();
     }
 
     public IActionResult Privacy()
